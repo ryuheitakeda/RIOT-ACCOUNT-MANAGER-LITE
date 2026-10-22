@@ -1,0 +1,56 @@
+<Window x:Class="RiotAccountsLite.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Riot Accounts Lite" Style="{StaticResource {x:Type Window}}" Width="1000" Height="700" MinWidth="820" MinHeight="580" WindowStartupLocation="CenterScreen">
+ <Grid Margin="26">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <DockPanel Margin="0,0,0,22">
+   <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center"><Button Content="全ランク更新" Click="RefreshAll_Click" ToolTip="登録済みの全アカウントのランクを、登録順にOP.GGから取得します"/><Button Content="このアプリについて" Click="About_Click" Margin="0"/></StackPanel>
+   <StackPanel><TextBlock Text="Riot Accounts Lite" FontSize="29" FontWeight="SemiBold"/><TextBlock Text="アカウント管理とランク確認（簡易版）" Foreground="#597183" Margin="0,4,0,0"/></StackPanel>
+  </DockPanel>
+  <Grid Grid.Row="1">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <Border Background="White" CornerRadius="10" Padding="16">
+    <DockPanel>
+     <Button DockPanel.Dock="Bottom" Content="＋ アカウントを追加" Click="Add_Click" Margin="0,16,0,0"/>
+     <TextBlock DockPanel.Dock="Top" Text="アカウント" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+     <ListBox x:Name="AccountsList" SelectionChanged="Account_Changed" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" KeyboardNavigation.TabNavigation="Continue">
+      <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Padding" Value="8,12"/><Setter Property="Margin" Value="0,2"/></Style></ListBox.ItemContainerStyle>
+      <ListBox.ItemTemplate><DataTemplate><StackPanel>
+       <TextBlock Text="{Binding Label}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+       <TextBlock Text="{Binding RiotId}" Foreground="#597183" Margin="0,5,0,0" TextTrimming="CharacterEllipsis"/>
+       <TextBlock Text="{Binding Platform}" Foreground="#597183" FontSize="12" Margin="0,3,0,0"/>
+       <TextBlock Text="{Binding Summary}" Foreground="#45647A" FontSize="12" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" ToolTip="保存済みの最新ランク（Solo/Duo、なければFlex）。一覧の表示では通信しません"/>
+       <TextBlock Text="{Binding Failure}" Visibility="{Binding FailureVisibility}" Foreground="Firebrick" FontSize="12" Margin="0,3,0,0"/>
+      </StackPanel></DataTemplate></ListBox.ItemTemplate>
+     </ListBox>
+    </DockPanel>
+   </Border>
+   <Grid Grid.Column="2">
+    <Border x:Name="EmptyPanel" Background="#E6EEF5" CornerRadius="10" Padding="36"><StackPanel VerticalAlignment="Center"><TextBlock Text="最初のアカウントを登録" FontSize="27" FontWeight="SemiBold"/><TextBlock Text="ログイン情報はこのWindowsユーザーに紐づけて暗号化して保管します。ランクはOP.GG（非公式）から取得します。APIキーや外部サーバーの準備は不要です。" FontSize="16" LineHeight="28" Margin="0,16,0,24"/><Button Content="アカウントを追加" Style="{StaticResource Primary}" Click="Add_Click" HorizontalAlignment="Left"/></StackPanel></Border>
+    <ScrollViewer x:Name="DetailPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+     <StackPanel>
+      <Border Background="#DDEAF4" CornerRadius="10" Padding="22">
+       <StackPanel>
+        <DockPanel><StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top"><Button Content="編集" Click="Edit_Click"/><Button Content="削除" Click="Delete_Click" Margin="0"/></StackPanel><StackPanel><TextBlock x:Name="AccountTitle" FontSize="25" FontWeight="SemiBold"/><TextBlock x:Name="AccountIdentity" Foreground="#45647A" Margin="0,5,0,0"/><TextBlock x:Name="AccountNote" Foreground="#2B4556" Margin="0,8,0,0" AutomationProperties.Name="メモ"/></StackPanel></DockPanel>
+        <WrapPanel Margin="0,20,0,0"><Button Content="ログインIDをコピー" Style="{StaticResource Primary}" Click="CopyUser_Click"/><Button Content="パスワードをコピー" Click="CopyPassword_Click"/><Button Content="OP.GGで開く" Click="OpenOpgg_Click" ToolTip="このアカウントのOP.GGページをブラウザで開きます"/></WrapPanel>
+        <TextBlock Text="パスワードは30秒後にクリップボードから消去します（その間にほかの内容をコピーした場合は消去しません）。" FontSize="12" Foreground="#45647A" Margin="0,12,0,0"/>
+       </StackPanel>
+      </Border>
+      <Border Background="White" CornerRadius="10" Padding="22" Margin="0,18,0,0">
+       <StackPanel>
+        <DockPanel><Button DockPanel.Dock="Right" Content="ランク更新" Click="RefreshOne_Click" Margin="0" ToolTip="このアカウントのランクをOP.GGから取得します"/><TextBlock Text="ランク（OP.GG）" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/></DockPanel>
+        <UniformGrid Columns="2" Margin="0,16,0,0">
+         <StackPanel Margin="0,0,16,0"><TextBlock Text="Solo / Duo" Foreground="#597183"/><TextBlock x:Name="SoloRank" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,0"/><TextBlock x:Name="SoloRecord" Foreground="#597183" Margin="0,4,0,0"/></StackPanel>
+         <StackPanel><TextBlock Text="Flex" Foreground="#597183"/><TextBlock x:Name="FlexRank" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,0"/><TextBlock x:Name="FlexRecord" Foreground="#597183" Margin="0,4,0,0"/></StackPanel>
+        </UniformGrid>
+        <TextBlock x:Name="RankTime" FontSize="12" Foreground="#597183" Margin="0,16,0,0"/>
+        <TextBlock x:Name="RankError" FontSize="12" Foreground="Firebrick" Margin="0,6,0,0" Visibility="Collapsed"/>
+        <TextBlock Text="OP.GG（非公式）から取得します。OP.GG側のデータが更新されていないと、最新のランクと異なることがあります。" FontSize="12" Foreground="#597183" Margin="0,12,0,0"/>
+       </StackPanel>
+      </Border>
+     </StackPanel>
+    </ScrollViewer>
+   </Grid>
+  </Grid>
+  <DockPanel Grid.Row="2" Margin="0,18,0,0"><Button DockPanel.Dock="Right" x:Name="CancelButton" Content="中止" Click="Cancel_Click" Visibility="Collapsed" Margin="10,0,0,0"/><TextBlock x:Name="StatusText" Text="保存済みのランクを表示しています。OP.GGへの問い合わせは、ボタンを押したときだけ行います。" Foreground="#597183" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/></DockPanel>
+ </Grid>
+</Window>

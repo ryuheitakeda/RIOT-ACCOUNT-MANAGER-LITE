@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RiotAccountsLite.App/RiotAccountsLite.App.csproj" />
+    <Project Path="src/RiotAccountsLite.Core/RiotAccountsLite.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RiotAccountsLite.Core.Tests/RiotAccountsLite.Core.Tests.csproj" />
+  </Folder>
+</Solution>
